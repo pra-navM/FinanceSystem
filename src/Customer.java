@@ -6,7 +6,8 @@ public class Customer {
     private int savingAcc;
     private int debtAcc;
     private ArrayList<CustomerShare>shares;
-    public Customer(String name, int ssn, int checkAcc, int savingAcc, int debtAcc,String shareInfo){
+    private ArrayList<String>shareOwned;
+    public Customer(String name, int ssn, int checkAcc, int savingAcc,int debtAcc){
         this.name = name;
         this.ssn = ssn;
         this.checkAcc = checkAcc;
