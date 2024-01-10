@@ -7,13 +7,12 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 public class Main extends JPanel{
     JFrame mainFrame;
-    JPanel left, middle, right;
-    JButton addCustomer, addShares, clearShares, addFile,changeChecking, changeSavings, changeDebt, resetValues1,
-    updatePositions, changeStocksShorts, editStocks, changeValue,changeCap, resetValues2, addStock, viewStockHistory;
-    JTextField SSNTextField, nameTextField, checkingTextField, savingsTextField, debtTextField, numOfSharesTextField,
-    checking2TextField, savings2TextField, debt2TextField, changeShareTextField, valueTextField, capTextField, name2TextField, value2TextField, cap2TextField;
-    JLabel SSNLabel, nameLabel, checkingLabel, savingsLabel, debtLabel, numofSharesLabel, stocksAndShortsLabel, typeLabel, checkingLabel2, savingsLabel2, debtLabel2,
-    changeShareLabel, valueLabel, capLabel, nameLabel2, valueLabel2, capLabel2;
+    JPanel mainName, sort, SSN1, SSN2, Name1, Name2, Checking1, Checking2, Savings1, Savings2,
+    Debt1, Debt2, rightStockName, stockType, numOfShares,textPreview,
+    customerName, stocksAndShorts, mainBox, checking1, checking2,  savings1, savings2, changesavings, debt1, debt2,
+    changeDebt, resetAccountValues, netValue, updatePositions, changeStockShort, stock, changeShare1, changeShare2,
+    editStocks, leftStockName, value1, value2, changeValue, cap1, cap2, changeCap, resetStockValues, numOfStocksBought,
+    numOfShortsHeld, addStock, stockName1, stockName2, stockValue1, stockValue2, stockCap1, stockCap2, viewStockHistory;
 
     private final Font ARIAL_30 = new Font("Arial", Font.PLAIN, 30);
     public Main()
