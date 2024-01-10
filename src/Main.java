@@ -13,6 +13,7 @@ public class Main extends JPanel{
         Border line =  new LineBorder(Color.lightGray, 4);
 
         JFrame frame = new JFrame();
+        frame.setResizable(false);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(1050,570);
         frame.setLayout(new FlowLayout());
@@ -21,7 +22,6 @@ public class Main extends JPanel{
         left.setPreferredSize(new Dimension(250,300));
         left.setBackground(Color.lightGray);
         left.setBorder(line);
-        left.setLayout(new GridLayout(12,1));
         frame.add(left);
 
         JPanel center = new JPanel();
@@ -35,44 +35,66 @@ public class Main extends JPanel{
         right.setPreferredSize(new Dimension(250,300));
         right.setBackground(Color.lightGray);
         right.setBorder(line);
-        right.setLayout(new GridLayout(12,1));
         frame.add(right);
 
         JPanel bottomLeft = new JPanel();
         bottomLeft.setPreferredSize(new Dimension(250,200));
         bottomLeft.setBackground(Color.lightGray);
         bottomLeft.setBorder(line);
-        bottomLeft.setLayout(new GridLayout(2,1));
         frame.add(bottomLeft);
 
         JPanel bottomCenter = new JPanel();
         bottomCenter.setPreferredSize(new Dimension(500,200));
         bottomCenter.setBackground(Color.lightGray);
         bottomCenter.setBorder(line);
-        bottomCenter.setLayout(new GridLayout(7,1));
         frame.add(bottomCenter);
 
         JPanel bottomRight = new JPanel();
         bottomRight.setPreferredSize(new Dimension(250,200));
         bottomRight.setBackground(Color.lightGray);
         bottomRight.setBorder(line);
-        bottomRight.setLayout(new GridLayout(7,1));
         frame.add(bottomRight);
 
+        JLabel customerSort1 = new JLabel("Customer Sort:");
+        customerSort1.setSize(120,25);
+        left.add(customerSort1);
 
-
-        JComboBox <String> customerSort  = new JComboBox();
-        customerSort.setSize(250,16);
-        customerSort.set
-        customerSort.addItem("Aaron");
-        customerSort.addItem("Kevin");// replace with data
-        left.add(customerSort);
-
+        JComboBox <String> customerSort2  = new JComboBox<>();
+        customerSort2.setSize(120,25);
+        customerSort2.addItem("Debt");
+        customerSort2.addItem("Aaron");
+        customerSort2.addItem("Kevin");// replace with data
+        left.add(customerSort2);
 
         JButton Alex = new JButton();
-        Alex.setSize(250,16);
+        Alex.setMargin(new Insets(5,100,5,100));
         Alex.setText("Add Customer");
         left.add(Alex);
+
+        JLabel JLSSN = new JLabel("SSN:");
+        left.add(JLSSN);
+
+        JTextField TFSSN = new JTextField();
+        TFSSN.setColumns(15);
+        left.add(TFSSN);
+
+        
+        JLabel JLname = new JLabel("Name:");
+        left.add(JLname);
+
+        JTextField TFname = new JTextField();
+        TFname.setColumns(14);
+        left.add(TFname);
+
+
+        JLabel JLchecking = new JLabel("Checking:");
+        left.add(JLchecking);
+
+        JTextField TFchecking = new JTextField();
+        TFchecking.setColumns(13);
+        left.add(TFchecking);
+
+
 
 
 
