@@ -196,9 +196,19 @@ public class Main extends JPanel{
         stocksAndShorts.setFont(f);
         center.add(stocksAndShorts);
 
-        JLabel headings = new JLabel("Name                              TypeShares                              Price                              Total value");
+        JLabel headings = new JLabel("Name               Type               Shares               Price               Total Value");
         headings.setFont(f);
         center.add(headings);
+
+        JTextArea TAmainwindow = new JTextArea();
+        TAmainwindow.setLineWrap(true);
+        TAmainwindow.setFont(f);
+        TAmainwindow.setRows(10);
+        TAmainwindow.setColumns(25);
+        center.add(TAmainwindow);
+
+
+
 
 
 
