@@ -8,7 +8,8 @@ import javax.swing.border.Border;
 import javax.swing.border.LineBorder;
 
 public class Main extends JPanel implements ActionListener {
-    public static JTextField TFsavingChange,TFcheckingChange,TFdebtChange,TFstockNum,TFstockValue;
+    public static JTextField TFsavingChange,TFcheckingChange,TFdebtChange,TFstockNum,TFstockValue,
+                            TFSSN, TFname, TFchecking, TFsavings, TFdebt;
     public static Font f = new Font(Font.MONOSPACED, Font.BOLD, 12);
     public static Font bigf = new Font("Arial", Font.BOLD, 12);
     public static int netAsset=123000;
@@ -17,6 +18,7 @@ public class Main extends JPanel implements ActionListener {
     public static int debt=10000;
     public static int tslaStock=300;
     public static int tslaValue =3000;
+
 
     public Main(){
         Border line = new LineBorder(Color.lightGray, 1);
@@ -430,7 +432,18 @@ public class Main extends JPanel implements ActionListener {
         if(in.equals("changeDebt")){
             debt = Integer.parseInt(TFdebtChange.getText());
         }
+        if(in.equals("addCustomer"))
+        {
+            Customer c = new Customer(TFname.getText(), Integer.parseInt(TFSSN.getText()),Integer.parseInt(TFchecking.getText()),Integer.parseInt(TFsavings.getText()), Integer.parseInt(TFdebt.getText()));
+        }
         netAsset = saving + checking + 23000 - debt + tslaValue * tslaStock;
         new Main();
     }
+
+    public void addStock(JComboBox C)
+    {
+
+    }
+
+
 }
