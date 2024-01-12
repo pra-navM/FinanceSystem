@@ -1,18 +1,27 @@
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.Border;
 import javax.swing.border.LineBorder;
 
-public class Main extends JPanel {
+public class Main extends JPanel implements ActionListener {
+    public static JTextField TFsavingChange,TFcheckingChange,TFdebtChange,TFstockNum,TFstockValue;
     public static Font f = new Font(Font.MONOSPACED, Font.BOLD, 12);
     public static Font bigf = new Font("Arial", Font.BOLD, 12);
+    public static int netAsset=123000;
+    public static int checking=10000;
+    public static int saving=10000;
+    public static int debt=10000;
+    public static int tslaStock=300;
+    public static int tslaValue =3000;
 
-    public static void main(String[] args) {
+    public Main(){
         Border line = new LineBorder(Color.lightGray, 1);
 
-        JFrame frame = new JFrame();
+        JFrame frame = new JFrame("ANP Banking Services");
         frame.setResizable(false);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(1050, 570);
@@ -75,6 +84,7 @@ public class Main extends JPanel {
         addCustomer.setMargin(new Insets(0, 72, 0, 72));
         addCustomer.setText("Add Customer");
         addCustomer.setFont(f);
+        addCustomer.setActionCommand("addCustomer");
         left.add(addCustomer);
 
         JLabel JLSSN = new JLabel("SSN:");
@@ -130,12 +140,14 @@ public class Main extends JPanel {
         addShares.setMargin(new Insets(0, 78, 0, 79));
         addShares.setText("Add Shares");
         addShares.setFont(f);
+        addShares.setActionCommand("addShares");
         left.add(addShares);
 
         JButton clearShares = new JButton();
         clearShares.setFont(f);
         clearShares.setMargin(new Insets(1, 74, 1, 75));
         clearShares.setText("Clear Shares");
+        clearShares.setActionCommand("clearShares");
         left.add(clearShares);
 
 
@@ -200,42 +212,9 @@ public class Main extends JPanel {
         TAmainwindow.setRows(10);
         TAmainwindow.setColumns(65);
         TAmainwindow.setEditable(false);
-        TAmainwindow.append(String.format("%-23s%-9s%-11s%-10s%s%n","TSLA","Short","300","$3000","$900000"));
-        TAmainwindow.append(String.format("%-23s%-9s%-11s%-10s%s%n","AMZN","Short","100","$200","$20000"));
-        TAmainwindow.append(String.format("%-23s%-9s%-11s%-10s%s%n","AMD","Short","1","$3000","$3000"));
-        TAmainwindow.append(String.format("%-23s%-9s%-11s%-10s%s%n","TSLA","Short","300","$3000","$900000"));
-        TAmainwindow.append(String.format("%-23s%-9s%-11s%-10s%s%n","AMZN","Short","100","$200","$20000"));
-        TAmainwindow.append(String.format("%-23s%-9s%-11s%-10s%s%n","AMD","Short","1","$3000","$3000"));
-        TAmainwindow.append(String.format("%-23s%-9s%-11s%-10s%s%n","TSLA","Short","300","$3000","$900000"));
-        TAmainwindow.append(String.format("%-23s%-9s%-11s%-10s%s%n","AMZN","Short","100","$200","$20000"));
-        TAmainwindow.append(String.format("%-23s%-9s%-11s%-10s%s%n","AMD","Short","1","$3000","$3000"));
-        TAmainwindow.append(String.format("%-23s%-9s%-11s%-10s%s%n","TSLA","Short","300","$3000","$900000"));
-        TAmainwindow.append(String.format("%-23s%-9s%-11s%-10s%s%n","AMZN","Short","100","$200","$20000"));
-        TAmainwindow.append(String.format("%-23s%-9s%-11s%-10s%s%n","AMD","Short","1","$3000","$3000"));
-        TAmainwindow.append(String.format("%-23s%-9s%-11s%-10s%s%n","TSLA","Short","300","$3000","$900000"));
-        TAmainwindow.append(String.format("%-23s%-9s%-11s%-10s%s%n","AMZN","Short","100","$200","$20000"));
-        TAmainwindow.append(String.format("%-23s%-9s%-11s%-10s%s%n","AMD","Short","1","$3000","$3000"));
-        TAmainwindow.append(String.format("%-23s%-9s%-11s%-10s%s%n","TSLA","Short","300","$3000","$900000"));
-        TAmainwindow.append(String.format("%-23s%-9s%-11s%-10s%s%n","AMZN","Short","100","$200","$20000"));
-        TAmainwindow.append(String.format("%-23s%-9s%-11s%-10s%s%n","AMD","Short","1","$3000","$3000"));
-        TAmainwindow.append(String.format("%-23s%-9s%-11s%-10s%s%n","TSLA","Short","300","$3000","$900000"));
-        TAmainwindow.append(String.format("%-23s%-9s%-11s%-10s%s%n","AMZN","Short","100","$200","$20000"));
-        TAmainwindow.append(String.format("%-23s%-9s%-11s%-10s%s%n","AMD","Short","1","$3000","$3000"));
-        TAmainwindow.append(String.format("%-23s%-9s%-11s%-10s%s%n","TSLA","Short","300","$3000","$900000"));
-        TAmainwindow.append(String.format("%-23s%-9s%-11s%-10s%s%n","AMZN","Short","100","$200","$20000"));
-        TAmainwindow.append(String.format("%-23s%-9s%-11s%-10s%s%n","AMD","Short","1","$3000","$3000"));
-        TAmainwindow.append(String.format("%-23s%-9s%-11s%-10s%s%n","TSLA","Short","300","$3000","$900000"));
-        TAmainwindow.append(String.format("%-23s%-9s%-11s%-10s%s%n","AMZN","Short","100","$200","$20000"));
-        TAmainwindow.append(String.format("%-23s%-9s%-11s%-10s%s%n","AMD","Short","1","$3000","$3000"));
-        TAmainwindow.append(String.format("%-23s%-9s%-11s%-10s%s%n","TSLA","Short","300","$3000","$900000"));
-        TAmainwindow.append(String.format("%-23s%-9s%-11s%-10s%s%n","AMZN","Short","100","$200","$20000"));
-        TAmainwindow.append(String.format("%-23s%-9s%-11s%-10s%s%n","AMD","Short","1","$3000","$3000"));
-        TAmainwindow.append(String.format("%-23s%-9s%-11s%-10s%s%n","TSLA","Short","300","$3000","$900000"));
-        TAmainwindow.append(String.format("%-23s%-9s%-11s%-10s%s%n","AMZN","Short","100","$200","$20000"));
-        TAmainwindow.append(String.format("%-23s%-9s%-11s%-10s%s%n","AMD","Short","1","$3000","$3000"));
-        TAmainwindow.append(String.format("%-23s%-9s%-11s%-10s%s%n","TSLA","Short","300","$3000","$900000"));
-        TAmainwindow.append(String.format("%-23s%-9s%-11s%-10s%s%n","AMZN","Short","100","$200","$20000"));
-        TAmainwindow.append(String.format("%-23s%-9s%-11s%-10s%s%n","AMD","Short","1","$3000","$3000"));
+        TAmainwindow.append(String.format("%-23s%-9s%-11s$%-10d$%d%n","TSLA","Stock","300",tslaValue,tslaValue*tslaStock));
+        TAmainwindow.append(String.format("%-23s%-9s%-11s$%-10s$%s%n","AMZN","Short","100","$200","$20000"));
+        TAmainwindow.append(String.format("%-23s%-9s%-11s$%-10s$%s%n","AMD","Stock","1","$3000","$3000"));
 
         center.add(TAmainwindow);
 
@@ -265,6 +244,7 @@ public class Main extends JPanel {
         JButton JBstockValue = new JButton("Change Value");
         JBstockValue.setFont(f);
         JBstockValue.setMargin(new Insets(0,70,0,70));
+        JBstockValue.setActionCommand("changeValue");
         right.add(JBstockValue);
 
         JLabel JLstockCap = new JLabel("Cap:");
@@ -278,11 +258,13 @@ public class Main extends JPanel {
         JButton JBstockCap = new JButton("Change Cap");
         JBstockCap.setFont(f);
         JBstockCap.setMargin(new Insets(0,70,0,70));
+        JBstockCap.setActionCommand("changeCap");
         right.add(JBstockCap);
 
         JButton JBstockReset = new JButton("Reset Values");
         JBstockReset.setFont(f);
         JBstockReset.setMargin(new Insets(0,63,0,63));
+        JBstockReset.setActionCommand("resetStock");
         right.add(JBstockReset);
 
         JLabel JLstockOwned = new JLabel("# of Stocks Bought:");
@@ -310,55 +292,50 @@ public class Main extends JPanel {
         JTextArea TAsharesAdd = new JTextArea();
         TAsharesAdd.setColumns(23);
         TAsharesAdd.setFont(f);
-        TAsharesAdd.append("TSLA   Short   300               \n");
-        TAsharesAdd.append("TSLA   Short   300\n");
-        TAsharesAdd.append("TSLA   Short   300\n");
-        TAsharesAdd.append("TSLA   Short   300\n");
+        TAsharesAdd.append("TSLA   Stock   300               \n");
         TAsharesAdd.append("AMD    Short   300\n");
-        TAsharesAdd.append("TSLA   Short   300\n");
-        TAsharesAdd.append("AMD    Short   300\n");
-        TAsharesAdd.append("TSLA   Short   300\n");
-        TAsharesAdd.append("AMD    Short   300\n");
-        TAsharesAdd.append("TSLA   Short   300\n");
         bottomLeft.add(TAsharesAdd);
 
         JLabel JLcheckingChange = new JLabel("Checking:");
         JLcheckingChange.setFont(f);
         bottomCenter.add(JLcheckingChange);
 
-        JTextField TFcheckingChange = new JTextField("1000000");
+        TFcheckingChange = new JTextField(checking);
         TFcheckingChange.setColumns(16);
         bottomCenter.add(TFcheckingChange);
 
         JButton JBcheckingChange = new JButton("Change Checking");
         JBcheckingChange.setFont(f);
         JBcheckingChange.setMargin(new Insets(0,63,0,63));
+        JBcheckingChange.setActionCommand("changeCheck");
         bottomCenter.add(JBcheckingChange);
 
         JLabel JLsavingChange = new JLabel("Saving");
         JLsavingChange.setFont(f);
         bottomCenter.add(JLsavingChange);
 
-        JTextField TFsavingChange = new JTextField("1000000");
+        TFsavingChange = new JTextField(saving);
         TFsavingChange.setColumns(20);
         bottomCenter.add(TFsavingChange);
 
         JButton JBsavingChange = new JButton("Change Saving");
         JBsavingChange.setFont(f);
         JBsavingChange.setMargin(new Insets(0,63,0,63));
+        JBsavingChange.setActionCommand("changeSaving");
         bottomCenter.add(JBsavingChange);
 
         JLabel JLdebtChange = new JLabel("Debt");
         JLdebtChange.setFont(f);
         bottomCenter.add(JLdebtChange);
 
-        JTextField TFdebtChange = new JTextField("1000000");
+        TFdebtChange = new JTextField(debt);
         TFdebtChange.setColumns(23);
         bottomCenter.add(TFdebtChange);
 
         JButton JBdebtChange = new JButton("Change Debt");
         JBdebtChange.setMargin(new Insets(0,63,0,63));
         JBdebtChange.setFont(f);
+        JBdebtChange.setActionCommand("changeDebt");
         bottomCenter.add(JBdebtChange);
 
         JLabel JLstockChange = new JLabel("Stock: ");
@@ -374,21 +351,86 @@ public class Main extends JPanel {
         bottomCenter.add(JCstockChange);
         frame.setVisible(true);
 
-        JLabel JLstockNum = new JLabel("Change Share Number: ");
+        JLabel JLstockNum = new JLabel("Share Number: ");
         JLstockNum.setFont(f);
         bottomCenter.add(JLstockNum);
 
-        JTextField TFstockNum = new JTextField();
-        TFstockNum.setColumns(10);
+        TFstockNum = new JTextField();
+        TFstockNum.setColumns(8);
         bottomCenter.add(TFstockNum);
 
+        JButton JBstockNum = new JButton ("Change Share Number");
+        JBstockNum.setFont(f);
+        JBstockNum.setActionCommand("changeShare");
+        bottomCenter.add(JBstockNum);
 
         JButton JBcustReset = new JButton("Reset Values");
         JBcustReset.setFont(f);
         JBcustReset.setMargin(new Insets(10,100,10,100));
+        JBcustReset.setActionCommand("resetCust");
         bottomCenter.add(JBcustReset);
 
-        
+        JLabel JLnetAsset = new JLabel("Total Asset: $" + netAsset);
+        JLnetAsset.setFont(f);
+        bottomCenter.add(JLnetAsset);
 
+        JButton JBaddStock = new JButton("Add New Stock");
+        JBaddStock.setMargin(new Insets(0,63,0,63));
+        JBaddStock.setFont(f);
+        JBaddStock.setActionCommand("addStock");
+        bottomRight.add(JBaddStock);
+
+        JLabel JLnewStockName = new JLabel("Name: ");
+        JLnewStockName.setFont(f);
+        bottomRight.add(JLnewStockName);
+
+        JTextField TFnewStockName = new JTextField();
+        TFnewStockName.setColumns(15);
+        bottomRight.add(TFnewStockName);
+
+        JLabel JLnewStockValue = new JLabel("Value: ");
+        JLnewStockValue.setFont(f);
+        bottomRight.add(JLnewStockValue);
+
+        JTextField TFnewStockValue = new JTextField();
+        TFnewStockValue.setColumns(15);
+        bottomRight.add(TFnewStockValue);
+
+        JLabel JLnewStockCap = new JLabel("Cap: ");
+        JLnewStockCap.setFont(f);
+        bottomRight.add(JLnewStockCap);
+
+        JTextField TFnewStockCap = new JTextField();
+        TFnewStockCap.setColumns(15);
+        bottomRight.add(TFnewStockCap);
+
+        JButton JBstockHistory = new JButton("View Stock History");
+        JBstockHistory.setMargin(new Insets(0,63,0,63));
+        JBstockHistory.setFont(f);
+        JBstockHistory.setActionCommand("Stock History");
+        bottomRight.add(JBstockHistory);
+
+        JButton JBaddFile = new JButton("Add File");
+        JBaddFile.setMargin(new Insets(0,63,0,63));
+        JBaddFile.setFont(f);
+        JBaddFile.setActionCommand("addFile");
+        bottomRight.add(JBaddFile);
+
+    }
+    public static void main(String[] args){
+        new Main();
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        String in = e.getActionCommand();
+        if(in.equals("changeChecking")) {
+            checking =Integer.parseInt(TFcheckingChange.getText());
+        }
+        if(in.equals("changeDebt")){
+            debt = Integer.parseInt(TFdebtChange.getText());
+        }
+        netAsset = saving + checking + 23000 - debt + tslaValue * tslaStock;
+        new Main();
     }
 }
