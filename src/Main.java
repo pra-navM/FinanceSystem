@@ -6,21 +6,25 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.Border;
 import javax.swing.border.LineBorder;
+import java.util.*;
+import java.io.*;
 
 public class Main extends JPanel implements ActionListener {
     public static JTextField TFsavingChange,TFcheckingChange,TFdebtChange,TFstockNum,TFstockValue,
                             TFSSN, TFname, TFchecking, TFsavings, TFdebt;
+    public JTextField TFnewStockValue,TFnewStockName,TFnewStockCap;
+    public JTextArea TAsharesAdd;
     public static Font f = new Font(Font.MONOSPACED, Font.BOLD, 12);
-    public static Font bigf = new Font("Arial", Font.BOLD, 12);
-    public static int netAsset=123000;
-    public static int checking=10000;
-    public static int saving=10000;
-    public static int debt=10000;
-    public static int tslaStock=300;
-    public static int tslaValue =3000;
+    public int netAsset=123000;
+    public int checking=10000;
+    public int saving=10000;
+    public int debt=10000;
+    public ArrayList<Customer>customerArrayList;
 
 
     public Main(){
+        ArrayList<Customer>customerArrayList = new ArrayList<>();
+
         Border line = new LineBorder(Color.lightGray, 1);
 
         JFrame frame = new JFrame("ANP Banking Services");
@@ -93,7 +97,7 @@ public class Main extends JPanel implements ActionListener {
         JLSSN.setFont(f);
         left.add(JLSSN);
 
-        JTextField TFSSN = new JTextField();
+        JTextField  TFSSN = new JTextField();
         TFSSN.setColumns(24);
         TFSSN.setFont(f);
         left.add(TFSSN);
@@ -214,7 +218,6 @@ public class Main extends JPanel implements ActionListener {
         TAmainwindow.setRows(10);
         TAmainwindow.setColumns(65);
         TAmainwindow.setEditable(false);
-        TAmainwindow.append(String.format("%-23s%-9s%-11s$%-10d$%d%n","TSLA","Stock","300",tslaValue,tslaValue*tslaStock));
         TAmainwindow.append(String.format("%-23s%-9s%-11s$%-10s$%s%n","AMZN","Short","100","$200","$20000"));
         TAmainwindow.append(String.format("%-23s%-9s%-11s$%-10s$%s%n","AMD","Stock","1","$3000","$3000"));
 
@@ -239,7 +242,7 @@ public class Main extends JPanel implements ActionListener {
         JLstockValue.setFont(f);
         right.add(JLstockValue);
 
-        JTextField TFstockValue = new JTextField();
+        TFstockValue = new JTextField();
         TFstockValue.setColumns(17);
         right.add(TFstockValue);
 
@@ -291,7 +294,7 @@ public class Main extends JPanel implements ActionListener {
         JLsharesTitles.setFont(f);
         bottomLeft.add(JLsharesTitles);
 
-        JTextArea TAsharesAdd = new JTextArea();
+        TAsharesAdd = new JTextArea();
         TAsharesAdd.setColumns(23);
         TAsharesAdd.setFont(f);
         TAsharesAdd.append("TSLA   Stock   300               \n");
@@ -351,7 +354,6 @@ public class Main extends JPanel implements ActionListener {
         JCstockChange.addItem("AAPL");
         JCstockChange.addItem("AMD");// replace with data
         bottomCenter.add(JCstockChange);
-        frame.setVisible(true);
 
         JLabel JLstockNum = new JLabel("Share Number: ");
         JLstockNum.setFont(f);
@@ -386,7 +388,7 @@ public class Main extends JPanel implements ActionListener {
         JLnewStockName.setFont(f);
         bottomRight.add(JLnewStockName);
 
-        JTextField TFnewStockName = new JTextField();
+        TFnewStockName = new JTextField();
         TFnewStockName.setColumns(15);
         bottomRight.add(TFnewStockName);
 
@@ -394,7 +396,7 @@ public class Main extends JPanel implements ActionListener {
         JLnewStockValue.setFont(f);
         bottomRight.add(JLnewStockValue);
 
-        JTextField TFnewStockValue = new JTextField();
+        TFnewStockValue = new JTextField();
         TFnewStockValue.setColumns(15);
         bottomRight.add(TFnewStockValue);
 
@@ -402,7 +404,7 @@ public class Main extends JPanel implements ActionListener {
         JLnewStockCap.setFont(f);
         bottomRight.add(JLnewStockCap);
 
-        JTextField TFnewStockCap = new JTextField();
+        TFnewStockCap = new JTextField();
         TFnewStockCap.setColumns(15);
         bottomRight.add(TFnewStockCap);
 
@@ -418,6 +420,8 @@ public class Main extends JPanel implements ActionListener {
         JBaddFile.setActionCommand("addFile");
         bottomRight.add(JBaddFile);
 
+
+        frame.setVisible(true);
     }
     public static void main(String[] args){
         new Main();
@@ -434,9 +438,9 @@ public class Main extends JPanel implements ActionListener {
         }
         if(in.equals("addCustomer"))
         {
-            Customer c = new Customer(TFname.getText(), Integer.parseInt(TFSSN.getText()),Integer.parseInt(TFchecking.getText()),Integer.parseInt(TFsavings.getText()), Integer.parseInt(TFdebt.getText()));
+            customerArrayList.add(new Customer(TFname.getText(), Integer.parseInt(TFSSN.getText()),Integer.parseInt(TFchecking.getText()),Integer.parseInt(TFsavings.getText()), Integer.parseInt(TFdebt.getText()),TAsharesAdd.getText()));
         }
-        netAsset = saving + checking + 23000 - debt + tslaValue * tslaStock;
+        netAsset = saving + checking + 23000 - debt;
         new Main();
     }
 
