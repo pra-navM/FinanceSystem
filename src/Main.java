@@ -10,16 +10,26 @@ import java.util.*;
 import java.io.*;
 
 public class Main extends JPanel implements ActionListener {
-    public static JTextField TFsavingChange,TFcheckingChange,TFdebtChange,TFstockNum,TFstockValue,
-                            TFSSN, TFname, TFchecking, TFsavings, TFdebt;
+
+    public static JTextField TFname = new JTextField();
+    public JTextField TFsavingChange = new JTextField();
+    public JTextField TFcheckingChange = new JTextField();
+    public JTextField TFdebtChange = new JTextField();
+    public JTextField TFstockNum = new JTextField();
+    public JTextField TFstockValue = new JTextField();
+    public static JTextField TFSSN = new JTextField();
+    public static JTextField TFchecking = new JTextField();
+    public static JTextField TFsavings = new JTextField();
+    public static JTextField TFdebt = new JTextField();
+
     public JTextField TFnewStockValue,TFnewStockName,TFnewStockCap;
-    public JTextArea TAsharesAdd;
+    public static JTextArea TAsharesAdd;
     public static Font f = new Font(Font.MONOSPACED, Font.BOLD, 12);
     public int netAsset=123000;
     public int checking=10000;
     public int saving=10000;
     public int debt=10000;
-    public ArrayList<Customer>customerArrayList;
+    public static ArrayList<Customer>customerArrayList;
 
 
     public Main(){
@@ -97,7 +107,6 @@ public class Main extends JPanel implements ActionListener {
         JLSSN.setFont(f);
         left.add(JLSSN);
 
-        JTextField  TFSSN = new JTextField();
         TFSSN.setColumns(24);
         TFSSN.setFont(f);
         left.add(TFSSN);
@@ -107,7 +116,6 @@ public class Main extends JPanel implements ActionListener {
         JLname.setFont(f);
         left.add(JLname);
 
-        JTextField TFname = new JTextField();
         TFname.setFont(f);
         TFname.setColumns(23);
         left.add(TFname);
@@ -117,7 +125,6 @@ public class Main extends JPanel implements ActionListener {
         JLchecking.setFont(f);
         left.add(JLchecking);
 
-        JTextField TFchecking = new JTextField();
         TFchecking.setFont(f);
         TFchecking.setColumns(19);
         left.add(TFchecking);
@@ -127,7 +134,6 @@ public class Main extends JPanel implements ActionListener {
         JLsavings.setFont(f);
         left.add(JLsavings);
 
-        JTextField TFsavings = new JTextField();
         TFsavings.setFont(f);
         TFsavings.setColumns(20);
         left.add(TFsavings);
@@ -137,7 +143,6 @@ public class Main extends JPanel implements ActionListener {
         JLdebt.setFont(f);
         left.add(JLdebt);
 
-        JTextField TFdebt = new JTextField();
         TFdebt.setFont(f);
         TFdebt.setColumns(23);
         left.add(TFdebt);
@@ -421,6 +426,14 @@ public class Main extends JPanel implements ActionListener {
         bottomRight.add(JBaddFile);
 
 
+        addCustomer.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                addCustomer();
+            }
+        });
+
+
         frame.setVisible(true);
     }
     public static void main(String[] args){
@@ -438,7 +451,9 @@ public class Main extends JPanel implements ActionListener {
         }
         if(in.equals("addCustomer"))
         {
-            customerArrayList.add(new Customer(TFname.getText(), Integer.parseInt(TFSSN.getText()),Integer.parseInt(TFchecking.getText()),Integer.parseInt(TFsavings.getText()), Integer.parseInt(TFdebt.getText()),TAsharesAdd.getText()));
+
+
+
         }
         netAsset = saving + checking + 23000 - debt;
         new Main();
@@ -446,6 +461,22 @@ public class Main extends JPanel implements ActionListener {
 
     public void addStock(JComboBox C)
     {
+
+    }
+
+    public static void addCustomer()
+    {
+        customerArrayList.add(new Customer(TFname.getText(), Integer.parseInt(TFSSN.getText()),Integer.parseInt(TFchecking.getText()),Integer.parseInt(TFsavings.getText()), Integer.parseInt(TFdebt.getText()),TAsharesAdd.getText()));
+        try {
+            PrintWriter output = new PrintWriter(new FileWriter("customerSave.txt"));
+            for(int i = 0; i < customerArrayList.size(); i++) {
+                System.out.print(customerArrayList.get(i));
+            }
+            output.close();
+
+        } catch (IOException ex) {
+            throw new RuntimeException(ex);
+        }
 
     }
 
