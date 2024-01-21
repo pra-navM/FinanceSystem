@@ -2,60 +2,44 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.border.Border;
-import javax.swing.border.LineBorder;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import javax.swing.border.Border;
+import javax.swing.border.LineBorder;
 import java.util.*;
 import java.io.*;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.util.List;
-
 
 public class Main extends JPanel implements ActionListener {
 
-    public static JTextField TFname = new JTextField();
-    public JTextField TFsavingChange = new JTextField();
-    public JTextField TFcheckingChange = new JTextField();
-    public JTextField TFdebtChange = new JTextField();
-    public JTextField TFstockNum = new JTextField();
-    public JTextField TFstockValue = new JTextField();
-    public static JTextField TFSSN = new JTextField();
-    public static JTextField TFchecking = new JTextField();
-    public static JTextField TFsavings = new JTextField();
-    public static JTextField TFdebt = new JTextField();
+    public JTextField TFname,TFsavingChange,TFcheckingChange , TFdebtChange = new JTextField(),TFstockNum = new JTextField(),TFstockValue,TFSSN,TFchecking,TFsavings,TFdebt,TFnewStockValue,TFnewStockName,TFnewStockCap,TFnumOfShares,TFstockCap;
+    public JComboBox<String> customerSort2,stockName, JCallStocks,shareType,JCstockChange;
+    public JComboBox<Customer> JCcustomerName = new JComboBox<>();
+    public HashSet <Customer> customerHashSet = new HashSet<>();
+    public JTextArea TAsharesAdd;
+    public Font f = new Font(Font.MONOSPACED, Font.BOLD, 12);
+    public double netAsset;
+    public double checking;
+    public double saving;
+    public double debt;
+    public double oldStockValue = -1;
+    public double oldStockCap = -1;
+    public static ArrayList<CustomerShare>customerShares;
+    public static HashMap<String,Stock>StockMap;
+    public static ArrayList<Customer>customerArrayList;
 
-    public static HashSet <Customer> customerHashSet = new HashSet<>();
-    public static JComboBox<Customer> JCcustomerName = new JComboBox<>();
-    public static JComboBox<String> customerSort2 = new JComboBox<>();
-
-
-    public JTextField TFnewStockValue,TFnewStockName,TFnewStockCap;
-    public static JTextArea TAsharesAdd;
-    public static Font f = new Font(Font.MONOSPACED, Font.BOLD, 12);
-    public int netAsset=123000;
-    public int checking=10000;
-    public int saving=10000;
-    public int debt=10000;
-    public static ArrayList<Customer>customerArrayList = new ArrayList<>();
-
-
-    public Main() throws FileNotFoundException {
-        ArrayList<Customer>customerArrayList = new ArrayList<>();
-
+    public Main(){
+        customerShares = new ArrayList<>();
+        StockMap = new HashMap<>();
+        customerArrayList = new ArrayList<>();
         Border line = new LineBorder(Color.lightGray, 1);
 
         JFrame frame = new JFrame("ANP Banking Services");
         frame.setResizable(false);
-        //frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(1050, 570);
         frame.setLayout(new FlowLayout());
+
         frame.addWindowListener(new WindowAdapter() {
-            @Override
             public void windowClosing(WindowEvent e) {
                 saveToFile();
                 frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -105,7 +89,7 @@ public class Main extends JPanel implements ActionListener {
         customerSort1.setFont(f);
         left.add(customerSort1);
 
-
+        customerSort2 = new JComboBox<>();
         customerSort2.setSize(120, 25);
         customerSort2.setFont(f);
         customerSort2.addItem("Name");
@@ -113,30 +97,24 @@ public class Main extends JPanel implements ActionListener {
         customerSort2.addItem("Checking");
         customerSort2.addItem("Saving");
         customerSort2.addItem("Debt");
+        customerSort2.setActionCommand("SortChange");
+        customerSort2.addActionListener(this);
         left.add(customerSort2);
 
         JButton addCustomer = new JButton();
-        addCustomer.setMargin(new Insets(0, 10, 0, 10));
+        addCustomer.setMargin(new Insets(0, 72, 0, 72));
         addCustomer.setText("Add Customer");
         addCustomer.setFont(f);
+        addCustomer.addActionListener(this);
         addCustomer.setActionCommand("addCustomer");
         left.add(addCustomer);
 
-
-        JButton removeCustomer = new JButton();
-        removeCustomer.setMargin(new Insets(0, 4, 0, 4));
-        removeCustomer.setText("Remove Customer");
-        removeCustomer.setFont(f);
-        //removeCustomer.setActionCommand("removeCustomer");
-        left.add(removeCustomer);
-        
-        
-        
         JLabel JLSSN = new JLabel("SSN:");
         JLSSN.setFont(f);
         left.add(JLSSN);
 
-        TFSSN.setColumns(24);
+        TFSSN = new JTextField();
+        TFSSN.setColumns(23);
         TFSSN.setFont(f);
         left.add(TFSSN);
 
@@ -145,6 +123,7 @@ public class Main extends JPanel implements ActionListener {
         JLname.setFont(f);
         left.add(JLname);
 
+        TFname = new JTextField();
         TFname.setFont(f);
         TFname.setColumns(23);
         left.add(TFname);
@@ -154,6 +133,7 @@ public class Main extends JPanel implements ActionListener {
         JLchecking.setFont(f);
         left.add(JLchecking);
 
+        TFchecking = new JTextField();
         TFchecking.setFont(f);
         TFchecking.setColumns(19);
         left.add(TFchecking);
@@ -163,6 +143,7 @@ public class Main extends JPanel implements ActionListener {
         JLsavings.setFont(f);
         left.add(JLsavings);
 
+        TFsavings = new JTextField();
         TFsavings.setFont(f);
         TFsavings.setColumns(20);
         left.add(TFsavings);
@@ -172,6 +153,7 @@ public class Main extends JPanel implements ActionListener {
         JLdebt.setFont(f);
         left.add(JLdebt);
 
+        TFdebt = new JTextField();
         TFdebt.setFont(f);
         TFdebt.setColumns(23);
         left.add(TFdebt);
@@ -180,6 +162,7 @@ public class Main extends JPanel implements ActionListener {
         addShares.setMargin(new Insets(0, 78, 0, 79));
         addShares.setText("Add Shares");
         addShares.setFont(f);
+        addShares.addActionListener(this);
         addShares.setActionCommand("addShares");
         left.add(addShares);
 
@@ -187,6 +170,7 @@ public class Main extends JPanel implements ActionListener {
         clearShares.setFont(f);
         clearShares.setMargin(new Insets(1, 74, 1, 75));
         clearShares.setText("Clear Shares");
+        clearShares.addActionListener(this);
         clearShares.setActionCommand("clearShares");
         left.add(clearShares);
 
@@ -195,12 +179,9 @@ public class Main extends JPanel implements ActionListener {
         JLstockName.setFont(f);
         left.add(JLstockName);
 
-        JComboBox<String> stockName = new JComboBox<>();
+        stockName = new JComboBox<>();
         stockName.setFont(f);
         stockName.setSize(120, 5);
-        stockName.addItem("TSLA");
-        stockName.addItem("AAPL");
-        stockName.addItem("AMD");// replace with data
         left.add(stockName);
 
 
@@ -208,7 +189,7 @@ public class Main extends JPanel implements ActionListener {
         JLshareType.setFont(f);
         left.add(JLshareType);
 
-        JComboBox<String> shareType = new JComboBox<>();
+        shareType = new JComboBox<>();
         shareType.setFont(f);
         shareType.setSize(120, 5);
         shareType.addItem("Short");
@@ -220,21 +201,20 @@ public class Main extends JPanel implements ActionListener {
         JLnumOfShares.setFont(f);
         left.add(JLnumOfShares);
 
-        JTextField TFnumOfShares = new JTextField();
+        TFnumOfShares = new JTextField();
         TFnumOfShares.setFont(f);
         TFnumOfShares.setColumns(13);
         left.add(TFnumOfShares);
 
         JLabel JLcustomerName = new JLabel("Customer Name:");
-        loadCustomers();
+        //loadCustomers();
         JLcustomerName.setFont(f);
         center.add(JLcustomerName);
 
-
+        JCcustomerName = new JComboBox<>();
         JCcustomerName.setFont(f);
         JCcustomerName.setRenderer(new CustomComboBoxRenderer());
         JCcustomerName.setPreferredSize(new Dimension(300,20));
-
         center.add(JCcustomerName);
 
 
@@ -261,15 +241,14 @@ public class Main extends JPanel implements ActionListener {
         editAllStocks.setFont(f);
         right.add(editAllStocks);
 
-        JLabel JLallStocks = new JLabel("Stocks:           ");
+        JLabel JLallStocks = new JLabel("Stocks:              ");
         JLallStocks.setFont(f);
         right.add(JLallStocks);
 
-        JComboBox<String> JCallStocks = new JComboBox<>();
+        JCallStocks = new JComboBox<>();
         JCallStocks.setFont(f);
-        JCallStocks.addItem("TSLA");
-        JCallStocks.addItem("AMZN");
-        JCallStocks.addItem("AMD");
+        JCallStocks.setActionCommand("stockChangeSetup");
+        JCallStocks.addActionListener(this);
         right.add(JCallStocks);
 
         JLabel JLstockValue = new JLabel("Value: $");
@@ -277,47 +256,53 @@ public class Main extends JPanel implements ActionListener {
         right.add(JLstockValue);
 
         TFstockValue = new JTextField();
-        TFstockValue.setColumns(17);
+        TFstockValue.setColumns(15);
         right.add(TFstockValue);
 
         JButton JBstockValue = new JButton("Change Value");
         JBstockValue.setFont(f);
         JBstockValue.setMargin(new Insets(0,70,0,70));
+        JBstockValue.addActionListener(this);
         JBstockValue.setActionCommand("changeValue");
+
         right.add(JBstockValue);
 
         JLabel JLstockCap = new JLabel("Cap:");
         JLstockCap.setFont(f);
         right.add(JLstockCap);
 
-        JTextField TFstockCap = new JTextField("1000");
+        TFstockCap = new JTextField("1000");
         TFstockCap.setColumns(19);
         right.add(TFstockCap);
 
         JButton JBstockCap = new JButton("Change Cap");
         JBstockCap.setFont(f);
         JBstockCap.setMargin(new Insets(0,70,0,70));
+        JBstockCap.addActionListener(this);
         JBstockCap.setActionCommand("changeCap");
         right.add(JBstockCap);
 
         JButton JBstockReset = new JButton("Reset Values");
         JBstockReset.setFont(f);
         JBstockReset.setMargin(new Insets(0,63,0,63));
-        JBstockReset.setActionCommand("resetStock");
+        JBstockReset.addActionListener(this);
+        JBstockReset.setActionCommand("resetValuesStock");
         right.add(JBstockReset);
 
         JLabel JLstockOwned = new JLabel("# of Stocks Bought:");
         JLstockCap.setFont(f);
         right.add(JLstockOwned);
 
-        JTextField TFstockOwned = new JTextField("             300");
+        JTextField TFstockOwned = new JTextField();
+        TFstockOwned.setColumns(24);
         right.add(TFstockOwned);
 
         JLabel JLshortOwned = new JLabel("# of Shorts Held:");
         JLstockCap.setFont(f);
         right.add(JLshortOwned);
 
-        JTextField TFshortOwned = new JTextField("              300");
+        JTextField TFshortOwned = new JTextField();
+        TFshortOwned.setColumns(24);
         right.add(TFshortOwned);
 
         JLabel JLsharesAdd = new JLabel("Shares to Add      ");
@@ -329,37 +314,38 @@ public class Main extends JPanel implements ActionListener {
         bottomLeft.add(JLsharesTitles);
 
         TAsharesAdd = new JTextArea();
-        TAsharesAdd.setColumns(23);
+        TAsharesAdd.setColumns(33);
         TAsharesAdd.setFont(f);
-        TAsharesAdd.append("TSLA   Stock   300               \n");
-        TAsharesAdd.append("AMD    Short   300\n");
-        bottomLeft.add(TAsharesAdd);
+        JScrollPane SPsharesAdd = new JScrollPane(TAsharesAdd);
+        bottomLeft.add(SPsharesAdd);
 
         JLabel JLcheckingChange = new JLabel("Checking:");
         JLcheckingChange.setFont(f);
         bottomCenter.add(JLcheckingChange);
 
-        TFcheckingChange = new JTextField(checking);
+        TFcheckingChange = new JTextField(checking+"");
         TFcheckingChange.setColumns(16);
         bottomCenter.add(TFcheckingChange);
 
         JButton JBcheckingChange = new JButton("Change Checking");
         JBcheckingChange.setFont(f);
         JBcheckingChange.setMargin(new Insets(0,63,0,63));
+        JBcheckingChange.addActionListener(this);
         JBcheckingChange.setActionCommand("changeCheck");
         bottomCenter.add(JBcheckingChange);
 
-        JLabel JLsavingChange = new JLabel("Saving: ");
+        JLabel JLsavingChange = new JLabel("Saving");
         JLsavingChange.setFont(f);
         bottomCenter.add(JLsavingChange);
 
-        TFsavingChange = new JTextField(saving);
-        TFsavingChange.setColumns(18);
+        TFsavingChange = new JTextField(saving+"");
+        TFsavingChange.setColumns(20);
         bottomCenter.add(TFsavingChange);
 
         JButton JBsavingChange = new JButton("Change Saving");
         JBsavingChange.setFont(f);
         JBsavingChange.setMargin(new Insets(0,63,0,63));
+        JBsavingChange.addActionListener(this);
         JBsavingChange.setActionCommand("changeSaving");
         bottomCenter.add(JBsavingChange);
 
@@ -367,13 +353,14 @@ public class Main extends JPanel implements ActionListener {
         JLdebtChange.setFont(f);
         bottomCenter.add(JLdebtChange);
 
-        TFdebtChange = new JTextField(debt);
+        TFdebtChange = new JTextField(debt+"");
         TFdebtChange.setColumns(20);
         bottomCenter.add(TFdebtChange);
 
         JButton JBdebtChange = new JButton("Change Debt");
         JBdebtChange.setMargin(new Insets(0,63,0,63));
         JBdebtChange.setFont(f);
+        JBdebtChange.addActionListener(this);
         JBdebtChange.setActionCommand("changeDebt");
         bottomCenter.add(JBdebtChange);
 
@@ -381,12 +368,9 @@ public class Main extends JPanel implements ActionListener {
         JLstockChange.setFont(f);
         bottomCenter.add(JLstockChange);
 
-        JComboBox<String> JCstockChange = new JComboBox<>();
+        JCstockChange = new JComboBox<>();
         JCstockChange.setFont(f);
         JCstockChange.setSize(120, 5);
-        JCstockChange.addItem("TSLA");
-        JCstockChange.addItem("AAPL");
-        JCstockChange.addItem("AMD");// replace with data
         bottomCenter.add(JCstockChange);
 
         JLabel JLstockNum = new JLabel("Share Number: ");
@@ -399,13 +383,15 @@ public class Main extends JPanel implements ActionListener {
 
         JButton JBstockNum = new JButton ("Change Share Number");
         JBstockNum.setFont(f);
+        JBstockNum.addActionListener(this);
         JBstockNum.setActionCommand("changeShare");
         bottomCenter.add(JBstockNum);
 
         JButton JBcustReset = new JButton("Reset Values");
         JBcustReset.setFont(f);
         JBcustReset.setMargin(new Insets(10,100,10,100));
-        JBcustReset.setActionCommand("resetCust");
+        JBcustReset.addActionListener(this);
+        JBcustReset.setActionCommand("resetValuesCustomer");
         bottomCenter.add(JBcustReset);
 
         JLabel JLnetAsset = new JLabel("Total Asset: $" + netAsset);
@@ -415,6 +401,7 @@ public class Main extends JPanel implements ActionListener {
         JButton JBaddStock = new JButton("Add New Stock");
         JBaddStock.setMargin(new Insets(0,63,0,63));
         JBaddStock.setFont(f);
+        JBaddStock.addActionListener(this);
         JBaddStock.setActionCommand("addStock");
         bottomRight.add(JBaddStock);
 
@@ -445,129 +432,73 @@ public class Main extends JPanel implements ActionListener {
         JButton JBstockHistory = new JButton("View Stock History");
         JBstockHistory.setMargin(new Insets(0,63,0,63));
         JBstockHistory.setFont(f);
-        JBstockHistory.setActionCommand("Stock History");
+        JBstockHistory.addActionListener(this);
+        JBstockHistory.setActionCommand("stockHist");
         bottomRight.add(JBstockHistory);
 
         JButton JBaddFile = new JButton("Add File");
         JBaddFile.setMargin(new Insets(0,63,0,63));
         JBaddFile.setFont(f);
+        JBaddFile.addActionListener(this);
         JBaddFile.setActionCommand("addFile");
         bottomRight.add(JBaddFile);
 
-
-        addCustomer.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                addCustomer();
-            }
-        });
-
-        removeCustomer.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                removeCustomer();
-            }
-        });
-
-        customerSort2.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                sortCustomers();
-            }
-        });
-
-        loadCustomers();
+        //loadCustomers();
 
         frame.setVisible(true);
     }
-    public static void main(String[] args) throws FileNotFoundException {
+    public static void main(String[] args)throws FileNotFoundException{
         new Main();
     }
 
-    @Override
     public void actionPerformed(ActionEvent e) {
         String in = e.getActionCommand();
-        if(in.equals("changeChecking")) {
-            checking =Integer.parseInt(TFcheckingChange.getText());
-        }
-        if(in.equals("changeDebt")){
-            debt = Integer.parseInt(TFdebtChange.getText());
-        }
-        if(in.equals("addCustomer"))
-        {
-        }
-        netAsset = saving + checking + 23000 - debt;
-        try {
-            new Main();
-        } catch (FileNotFoundException ex) {
-            throw new RuntimeException(ex);
-        }
+        if(in.equals("SortChange")){sortCustomers();}
+        else if(in.equals("addCustomer")){addCustomer();}
+        else if(in.equals("addShares")){addShares();}
+        else if(in.equals("clearShares")){clearShares();}
+        else if(in.equals("stockChangeSetup")){stockChangeSetup();}
+        else if(in.equals("changeValue")){changeValue();}
+        else if(in.equals("changeCap")){changeCap();}
+        else if(in.equals("resetValuesStock")){resetStockValues();}
+        else if(in.equals("changeCheck")) {changeCheck();}
+        else if(in.equals("changeSaving")){changeSaving();}
+        else if(in.equals("changeDebt")){changeDebt();}
+        else if(in.equals("changeShare")){}
+        else if(in.equals("resetValuesCustomer")){}
+        else if(in.equals("addStock")){addStock();}
+        else if(in.equals("stockHist")){}
+        else if(in.equals("addFile")){}
     }
-
-    public void addStock(JComboBox C)
-    {}
-
-    public static void saveToFile() //save ArrayList to a file
-    {
-        try {
-            FileOutputStream fileOut = new FileOutputStream("serCustomerSave.ser");
-            ObjectOutputStream out = new ObjectOutputStream(fileOut);
-            out.writeObject(customerArrayList);
-            out.close();
-            fileOut.close();
-
-        } catch (IOException ex) {
-            throw new RuntimeException(ex);
-        }
-
+    public static Boolean errorCheckDouble(String message,String value){
+        try{
+            double errorCheck = Double.parseDouble(value);
+            if(errorCheck < 0)throw new Exception();
+            else return true;
+        }catch(Exception e){}
+        JFrame errorFrame = new JFrame("Error");
+        errorFrame.setResizable(false);
+        errorFrame.setSize(400,75);
+        JTextField errorText = new JTextField("Error: " + message);
+        errorFrame.add(errorText);
+        errorFrame.setVisible(true);
+        return false;
     }
-
-    public static void addCustomer()
-    {
-        customerHashSet.add(new Customer(TFname.getText(),
-                Integer.parseInt(TFSSN.getText()),
-                Double.parseDouble(TFchecking.getText()),
-                Double.parseDouble(TFsavings.getText()),
-                Double.parseDouble(TFdebt.getText()),
-                TAsharesAdd.getText()));
-        customerArrayList.clear();
-        customerArrayList.addAll(customerHashSet);
-        JCcustomerName.removeAllItems();
-        for(int i=0; i<customerArrayList.size(); i++)
-        {
-            JCcustomerName.addItem(customerArrayList.get(i));
-        }
+    public Boolean errorCheckInt(String message, String value){
+        try{
+            int errorCheck = Integer.parseInt(value);
+            if(errorCheck < 0)throw new Exception();
+            else return true;
+        }catch(Exception e){}
+        JFrame errorFrame = new JFrame("Error");
+        errorFrame.setResizable(false);
+        errorFrame.setSize(400,75);
+        JTextField text = new JTextField("Error: " + message);
+        errorFrame.add(text);
+        errorFrame.setVisible(true);
+        return false;
     }
-
-    public static void loadCustomers() {
-        try (FileInputStream fileIn = new FileInputStream("serCustomerSave.ser");
-             ObjectInputStream objectIn = new ObjectInputStream(fileIn)) {
-            customerArrayList.clear();
-            customerArrayList = (ArrayList<Customer>) objectIn.readObject();
-        }
-        catch (IOException | ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-        customerHashSet.clear();
-        customerHashSet.addAll(customerArrayList);
-        JCcustomerName.removeAllItems();
-        for(int i=0; i<customerArrayList.size(); i++)
-        {
-            JCcustomerName.addItem(customerArrayList.get(i));
-        }
-
-    }
-
-    public static void removeCustomer(){
-        Customer c = (Customer) JCcustomerName.getSelectedItem();
-        if(c!=null)
-        {
-            customerArrayList.remove(c);
-            customerHashSet.remove(c);
-            JCcustomerName.removeItem(c);
-        }
-    }
-    public static void sortCustomers(){
+    public void sortCustomers(){
         String selectedOption = (String) customerSort2.getSelectedItem();
         if(selectedOption.equals("Name")){
             Collections.sort(customerArrayList, new SortByName());
@@ -609,10 +540,103 @@ public class Main extends JPanel implements ActionListener {
         }
         //System.out.println("Selected Option: " + selectedOption);
     }
+    public void addCustomer()
+    {
+        customerHashSet.add(new Customer(TFname.getText(),
+                Integer.parseInt(TFSSN.getText()),
+                Double.parseDouble(TFchecking.getText()),
+                Double.parseDouble(TFsavings.getText()),
+                Double.parseDouble(TFdebt.getText()),
+                TAsharesAdd.getText()));
+        customerArrayList.clear();
+        customerArrayList.addAll(customerHashSet);
+        JCcustomerName.removeAllItems();
+        for(int i=0; i<customerArrayList.size(); i++)
+        {
+            JCcustomerName.addItem(customerArrayList.get(i));
+        }
+    }
+    public void addShares(){
+        if(errorCheckInt("Number of Shares is Invalid.", TFnumOfShares.getText())){
+            TAsharesAdd.append(String.format("%-7s%-8s%-18d%n",stockName.getSelectedItem(),shareType.getSelectedItem(),Integer.parseInt(TFnumOfShares.getText())));
+        }
+    }
+    public void clearShares(){
+        TAsharesAdd.setText("");
+    }
 
+    public void addStock(){
+        StockMap.put(TFnewStockName.getText().trim(),new Stock(TFnewStockName.getText(),Double.parseDouble(TFnewStockValue.getText()),Integer.parseInt(TFnewStockCap.getText())));
+        stockName.addItem(TFnewStockName.getText().trim());
+        JCallStocks.addItem(TFnewStockName.getText().trim());
+        JCstockChange.addItem(TFnewStockName.getText().trim());
+    }
+    public void stockChangeSetup(){
+        TFstockValue.setText(StockMap.get(JCstockChange.getSelectedItem()).getNewValue()+"");
+        TFstockCap.setText(StockMap.get(JCstockChange.getSelectedItem()).getNewValue()+"");
+        oldStockValue = StockMap.get(JCstockChange.getSelectedItem()).getNewValue();
+        oldStockCap = StockMap.get(JCstockChange.getSelectedItem()).getNewValue();
+    }
+    public void changeValue(){
+        StockMap.get(JCstockChange.getSelectedItem()).setValue(Double.parseDouble(TFstockValue.getText()));
+        oldStockValue = Double.parseDouble(TFstockValue.getText());
+    }
+    public void changeCap(){
+        StockMap.get(JCstockChange.getSelectedItem()).setCap(Integer.parseInt(TFstockCap.getText()));
+        oldStockCap = Integer.parseInt(TFstockCap.getText());
+    }
+    public void resetStockValues(){
+        TFstockValue.setText(oldStockValue+"");
+        TFstockCap.setText(oldStockCap+"");
+    }
+    public void changeCheck(){
+        Customer cust = (Customer)JCcustomerName.getSelectedItem();
+        cust.setCheckAcc(Double.parseDouble(TFcheckingChange.getText()));
+    }
+    public void changeSaving(){
+        Customer cust = (Customer)JCcustomerName.getSelectedItem();
+        cust.setSavingAcc(Double.parseDouble(TFcheckingChange.getText()));
+    }
+    public void changeDebt(){
+        Customer cust = (Customer)JCcustomerName.getSelectedItem();
+        cust.setDebtAcc(Double.parseDouble(TFcheckingChange.getText()));
+    }
+    public static void saveToFile() //save ArrayList to a file
+    {
+        try {
+            FileOutputStream fileOut = new FileOutputStream("serCustomerSave.ser");
+            ObjectOutputStream out = new ObjectOutputStream(fileOut);
+            out.writeObject(customerArrayList);
+            out.close();
+            fileOut.close();
+        } catch (IOException ex) {
+            throw new RuntimeException(ex);
+        }
+    }
 
-
-
-
-
+    public void loadCustomers() {
+        try (FileInputStream fileIn = new FileInputStream("customerSave.txt");
+             ObjectInputStream objectIn = new ObjectInputStream(fileIn)) {
+            customerArrayList.clear();
+            customerArrayList = (ArrayList<Customer>) objectIn.readObject();
+        }
+        catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        customerHashSet.clear();
+        customerHashSet.addAll(customerArrayList);
+        JCcustomerName.removeAllItems();
+        for (int i = 0; i < customerArrayList.size(); i++) {
+            JCcustomerName.addItem(customerArrayList.get(i));
+        }
+    }
+    public void removeCustomer(){
+        Customer c = (Customer) JCcustomerName.getSelectedItem();
+        if(c!=null)
+        {
+            customerArrayList.remove(c);
+            customerHashSet.remove(c);
+            JCcustomerName.removeItem(c);
+        }
+    }
 }
