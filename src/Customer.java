@@ -1,3 +1,5 @@
+import javax.swing.*;
+import java.awt.*;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -6,17 +8,17 @@ import java.util.*;
 public class Customer implements Serializable {
     private String name;
     private int ssn;
-    private int checkAcc;
-    private int savingAcc;
-    private int debtAcc;
+    private double checkAcc;
+    private double savingAcc;
+    private double debtAcc;
     private String sharesBought;
     private ArrayList<CustomerShare>shares;
     private ArrayList<String>shareOwned;
-    public Customer(String name, int ssn, int checkAcc, int savingAcc,int debtAcc, String sharesBought){
+    public Customer(String name, int ssn, double checkAcc, double savingAcc,double debtAcc, String sharesBought){
         this.name = name;
         this.ssn = ssn;
         this.checkAcc = checkAcc;
-        this.savingAcc = savingAcc;
+        this.savingAcc = Math.round(savingAcc*100.0)/100.0;
         this.debtAcc = debtAcc;
         this.sharesBought = sharesBought;
     }
@@ -32,6 +34,12 @@ public class Customer implements Serializable {
     public int hashCode() {
         return Objects.hash(ssn);
     }
+
+    public String toString(){
+        return name + "(" + ssn + ")";
+    }
+
+
 
 
 
@@ -51,14 +59,14 @@ public class Customer implements Serializable {
         this.ssn = ssn;
     }
     // Getter and Setter for checkAcc
-    public int getCheckAcc() {
+    public double getCheckAcc() {
         return checkAcc;
     }
     public void setCheckAcc(int checkAcc) {
         this.checkAcc = checkAcc;
     }
     // Getter and Setter for savingAcc
-    public int getSavingAcc() {
+    public double getSavingAcc() {
         return savingAcc;
     }
 
@@ -67,7 +75,7 @@ public class Customer implements Serializable {
     }
 
     // Getter and Setter for debtAcc
-    public int getDebtAcc() {
+    public double getDebtAcc() {
         return debtAcc;
     }
 
@@ -84,4 +92,15 @@ public class Customer implements Serializable {
         this.sharesBought = sharesBought;
     }
 
+}
+class CustomComboBoxRenderer extends DefaultListCellRenderer {
+    @Override
+    public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+        // Customize how objects are displayed in the JComboBox
+        if (value instanceof Customer) {
+            value = ((Customer) value).toString() ; // Display only the name
+        }
+        return super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+
+    }
 }

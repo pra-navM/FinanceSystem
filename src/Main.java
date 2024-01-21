@@ -30,7 +30,8 @@ public class Main extends JPanel implements ActionListener {
     public static JTextField TFdebt = new JTextField();
 
     public static HashSet <Customer> customerHashSet = new HashSet<>();
-    public static JComboBox<String> JCcustomerName = new JComboBox<>();
+    public static JComboBox<Customer> JCcustomerName = new JComboBox<>();
+
 
     public JTextField TFnewStockValue,TFnewStockName,TFnewStockCap;
     public static JTextArea TAsharesAdd;
@@ -114,12 +115,22 @@ public class Main extends JPanel implements ActionListener {
         left.add(customerSort2);
 
         JButton addCustomer = new JButton();
-        addCustomer.setMargin(new Insets(0, 72, 0, 72));
+        addCustomer.setMargin(new Insets(0, 10, 0, 10));
         addCustomer.setText("Add Customer");
         addCustomer.setFont(f);
         addCustomer.setActionCommand("addCustomer");
         left.add(addCustomer);
 
+
+        JButton removeCustomer = new JButton();
+        removeCustomer.setMargin(new Insets(0, 4, 0, 4));
+        removeCustomer.setText("Remove Customer");
+        removeCustomer.setFont(f);
+        //removeCustomer.setActionCommand("removeCustomer");
+        left.add(removeCustomer);
+        
+        
+        
         JLabel JLSSN = new JLabel("SSN:");
         JLSSN.setFont(f);
         left.add(JLSSN);
@@ -220,6 +231,8 @@ public class Main extends JPanel implements ActionListener {
 
 
         JCcustomerName.setFont(f);
+        JCcustomerName.setRenderer(new CustomComboBoxRenderer());
+        JCcustomerName.setPreferredSize(new Dimension(300,20));
 
         center.add(JCcustomerName);
 
@@ -335,12 +348,12 @@ public class Main extends JPanel implements ActionListener {
         JBcheckingChange.setActionCommand("changeCheck");
         bottomCenter.add(JBcheckingChange);
 
-        JLabel JLsavingChange = new JLabel("Saving");
+        JLabel JLsavingChange = new JLabel("Saving: ");
         JLsavingChange.setFont(f);
         bottomCenter.add(JLsavingChange);
 
         TFsavingChange = new JTextField(saving);
-        TFsavingChange.setColumns(20);
+        TFsavingChange.setColumns(18);
         bottomCenter.add(TFsavingChange);
 
         JButton JBsavingChange = new JButton("Change Saving");
@@ -447,6 +460,14 @@ public class Main extends JPanel implements ActionListener {
                 addCustomer();
             }
         });
+
+        removeCustomer.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                removeCustomer();
+            }
+        });
+
         loadCustomers();
 
         frame.setVisible(true);
@@ -495,16 +516,20 @@ public class Main extends JPanel implements ActionListener {
 
     public static void addCustomer()
     {
-        customerHashSet.add(new Customer(TFname.getText(), Integer.parseInt(TFSSN.getText()),Integer.parseInt(TFchecking.getText()),Integer.parseInt(TFsavings.getText()), Integer.parseInt(TFdebt.getText()),TAsharesAdd.getText()));
+        customerHashSet.add(new Customer(TFname.getText(),
+                Integer.parseInt(TFSSN.getText()),
+                Double.parseDouble(TFchecking.getText()),
+                Double.parseDouble(TFsavings.getText()),
+                Double.parseDouble(TFdebt.getText()),
+                TAsharesAdd.getText()));
         customerArrayList.clear();
         customerArrayList.addAll(customerHashSet);
         JCcustomerName.removeAllItems();
         for(int i=0; i<customerArrayList.size(); i++)
         {
-            JCcustomerName.addItem(customerArrayList.get(i).getName()+ "(" + customerArrayList.get(i).getSsn() + ")");
+            JCcustomerName.addItem(customerArrayList.get(i));
         }
     }
-
 
     public static void loadCustomers() {
         try (FileInputStream fileIn = new FileInputStream("serCustomerSave.ser");
@@ -520,9 +545,19 @@ public class Main extends JPanel implements ActionListener {
         JCcustomerName.removeAllItems();
         for(int i=0; i<customerArrayList.size(); i++)
         {
-            JCcustomerName.addItem(customerArrayList.get(i).getName() + "(" + customerArrayList.get(i).getSsn() + ")");
+            JCcustomerName.addItem(customerArrayList.get(i));
         }
 
+    }
+
+    public static void removeCustomer(){
+        Customer c = (Customer) JCcustomerName.getSelectedItem();
+        if(c!=null)
+        {
+            customerArrayList.remove(c);
+            customerHashSet.remove(c);
+            JCcustomerName.removeItem(c);
+        }
     }
 
 
