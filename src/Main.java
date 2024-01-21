@@ -31,6 +31,7 @@ public class Main extends JPanel implements ActionListener {
 
     public static HashSet <Customer> customerHashSet = new HashSet<>();
     public static JComboBox<Customer> JCcustomerName = new JComboBox<>();
+    public static JComboBox<String> customerSort2 = new JComboBox<>();
 
 
     public JTextField TFnewStockValue,TFnewStockName,TFnewStockCap;
@@ -104,7 +105,7 @@ public class Main extends JPanel implements ActionListener {
         customerSort1.setFont(f);
         left.add(customerSort1);
 
-        JComboBox<String> customerSort2 = new JComboBox<>();
+
         customerSort2.setSize(120, 25);
         customerSort2.setFont(f);
         customerSort2.addItem("Name");
@@ -362,12 +363,12 @@ public class Main extends JPanel implements ActionListener {
         JBsavingChange.setActionCommand("changeSaving");
         bottomCenter.add(JBsavingChange);
 
-        JLabel JLdebtChange = new JLabel("Debt");
+        JLabel JLdebtChange = new JLabel("Debt: ");
         JLdebtChange.setFont(f);
         bottomCenter.add(JLdebtChange);
 
         TFdebtChange = new JTextField(debt);
-        TFdebtChange.setColumns(23);
+        TFdebtChange.setColumns(20);
         bottomCenter.add(TFdebtChange);
 
         JButton JBdebtChange = new JButton("Change Debt");
@@ -468,6 +469,13 @@ public class Main extends JPanel implements ActionListener {
             }
         });
 
+        customerSort2.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                sortCustomers();
+            }
+        });
+
         loadCustomers();
 
         frame.setVisible(true);
@@ -559,6 +567,49 @@ public class Main extends JPanel implements ActionListener {
             JCcustomerName.removeItem(c);
         }
     }
+    public static void sortCustomers(){
+        String selectedOption = (String) customerSort2.getSelectedItem();
+        if(selectedOption.equals("Name")){
+            Collections.sort(customerArrayList, new SortByName());
+            JCcustomerName.removeAllItems();
+            for(int i=0; i<customerArrayList.size(); i++)
+            {
+                JCcustomerName.addItem(customerArrayList.get(i));
+            }
+        }
+        else if(selectedOption.equals("Net Asset")){
+            Collections.sort(customerArrayList, new SortByNetAsset());
+            JCcustomerName.removeAllItems();
+            for(int i=0; i<customerArrayList.size(); i++)
+            {
+                JCcustomerName.addItem(customerArrayList.get(i));
+            }}
+        else if(selectedOption.equals("Checking")){
+            Collections.sort(customerArrayList, new SortByChecking());
+            JCcustomerName.removeAllItems();
+            for(int i=0; i<customerArrayList.size(); i++)
+            {
+                JCcustomerName.addItem(customerArrayList.get(i));
+            }}
+        else if(selectedOption.equals("Saving")){
+            Collections.sort(customerArrayList, new SortBySaving());
+            JCcustomerName.removeAllItems();
+            for(int i=0; i<customerArrayList.size(); i++)
+            {
+                JCcustomerName.addItem(customerArrayList.get(i));
+            }}
+        else if(selectedOption.equals("Debt")){
+            Collections.sort(customerArrayList, new SortByDebt());
+            JCcustomerName.removeAllItems();
+            for(int i=0; i<customerArrayList.size(); i++)
+            {
+                JCcustomerName.addItem(customerArrayList.get(i));
+            }
+
+        }
+        //System.out.println("Selected Option: " + selectedOption);
+    }
+
 
 
 
