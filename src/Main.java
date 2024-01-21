@@ -6,8 +6,15 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.Border;
 import javax.swing.border.LineBorder;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.util.*;
 import java.io.*;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.util.List;
+
 
 public class Main extends JPanel implements ActionListener {
 
@@ -22,6 +29,9 @@ public class Main extends JPanel implements ActionListener {
     public static JTextField TFsavings = new JTextField();
     public static JTextField TFdebt = new JTextField();
 
+    public static HashSet <Customer> customerHashSet = new HashSet<>();
+    public static JComboBox<String> JCcustomerName = new JComboBox<>();
+
     public JTextField TFnewStockValue,TFnewStockName,TFnewStockCap;
     public static JTextArea TAsharesAdd;
     public static Font f = new Font(Font.MONOSPACED, Font.BOLD, 12);
@@ -29,19 +39,26 @@ public class Main extends JPanel implements ActionListener {
     public int checking=10000;
     public int saving=10000;
     public int debt=10000;
-    public static ArrayList<Customer>customerArrayList;
+    public static ArrayList<Customer>customerArrayList = new ArrayList<>();
 
 
-    public Main(){
+    public Main() throws FileNotFoundException {
         ArrayList<Customer>customerArrayList = new ArrayList<>();
 
         Border line = new LineBorder(Color.lightGray, 1);
 
         JFrame frame = new JFrame("ANP Banking Services");
         frame.setResizable(false);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        //frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(1050, 570);
         frame.setLayout(new FlowLayout());
+        frame.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                saveToFile();
+                frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            }
+        });
 
         JPanel left = new JPanel(new FlowLayout(FlowLayout.LEFT));
         left.setPreferredSize(new Dimension(250, 325));
@@ -197,15 +214,13 @@ public class Main extends JPanel implements ActionListener {
         left.add(TFnumOfShares);
 
         JLabel JLcustomerName = new JLabel("Customer Name:");
+        loadCustomers();
         JLcustomerName.setFont(f);
         center.add(JLcustomerName);
 
-        JComboBox<String> JCcustomerName = new JComboBox<>();
+
         JCcustomerName.setFont(f);
-        JCcustomerName.addItem("Nancy Pelosi");
-        JCcustomerName.addItem("Yu Jingyang");
-        JCcustomerName.addItem("Pranav Manjunath");
-        JCcustomerName.addItem("Hubert Blaine Wolfeschlegelsteinhausenbergerdorff Sr."); // replace with actual data
+
         center.add(JCcustomerName);
 
 
@@ -432,11 +447,11 @@ public class Main extends JPanel implements ActionListener {
                 addCustomer();
             }
         });
-
+        loadCustomers();
 
         frame.setVisible(true);
     }
-    public static void main(String[] args){
+    public static void main(String[] args) throws FileNotFoundException {
         new Main();
     }
 
@@ -451,34 +466,67 @@ public class Main extends JPanel implements ActionListener {
         }
         if(in.equals("addCustomer"))
         {
-
-
-
         }
         netAsset = saving + checking + 23000 - debt;
-        new Main();
+        try {
+            new Main();
+        } catch (FileNotFoundException ex) {
+            throw new RuntimeException(ex);
+        }
     }
 
     public void addStock(JComboBox C)
-    {
+    {}
 
-    }
-
-    public static void addCustomer()
+    public static void saveToFile() //save ArrayList to a file
     {
-        customerArrayList.add(new Customer(TFname.getText(), Integer.parseInt(TFSSN.getText()),Integer.parseInt(TFchecking.getText()),Integer.parseInt(TFsavings.getText()), Integer.parseInt(TFdebt.getText()),TAsharesAdd.getText()));
         try {
-            PrintWriter output = new PrintWriter(new FileWriter("customerSave.txt"));
-            for(int i = 0; i < customerArrayList.size(); i++) {
-                System.out.print(customerArrayList.get(i));
-            }
-            output.close();
+            FileOutputStream fileOut = new FileOutputStream("serCustomerSave.ser");
+            ObjectOutputStream out = new ObjectOutputStream(fileOut);
+            out.writeObject(customerArrayList);
+            out.close();
+            fileOut.close();
 
         } catch (IOException ex) {
             throw new RuntimeException(ex);
         }
 
     }
+
+    public static void addCustomer()
+    {
+        customerHashSet.add(new Customer(TFname.getText(), Integer.parseInt(TFSSN.getText()),Integer.parseInt(TFchecking.getText()),Integer.parseInt(TFsavings.getText()), Integer.parseInt(TFdebt.getText()),TAsharesAdd.getText()));
+        customerArrayList.clear();
+        customerArrayList.addAll(customerHashSet);
+        JCcustomerName.removeAllItems();
+        for(int i=0; i<customerArrayList.size(); i++)
+        {
+            JCcustomerName.addItem(customerArrayList.get(i).getName()+ "(" + customerArrayList.get(i).getSsn() + ")");
+        }
+    }
+
+
+    public static void loadCustomers() {
+        try (FileInputStream fileIn = new FileInputStream("serCustomerSave.ser");
+             ObjectInputStream objectIn = new ObjectInputStream(fileIn)) {
+            customerArrayList.clear();
+            customerArrayList = (ArrayList<Customer>) objectIn.readObject();
+        }
+        catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        customerHashSet.clear();
+        customerHashSet.addAll(customerArrayList);
+        JCcustomerName.removeAllItems();
+        for(int i=0; i<customerArrayList.size(); i++)
+        {
+            JCcustomerName.addItem(customerArrayList.get(i).getName() + "(" + customerArrayList.get(i).getSsn() + ")");
+        }
+
+    }
+
+
+
 
 
 }

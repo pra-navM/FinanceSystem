@@ -20,33 +20,43 @@ public class Customer implements Serializable {
         this.debtAcc = debtAcc;
         this.sharesBought = sharesBought;
     }
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Customer customer = (Customer) o;
+        return Objects.equals(ssn, customer.ssn);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(ssn);
+    }
+
+
+
+
     // Getter and Setter for name
     public String getName() {
         return name;
     }
-
     public void setName(String name) {
         this.name = name;
     }
-
     // Getter and Setter for ssn
     public int getSsn() {
         return ssn;
     }
-
     public void setSsn(int ssn) {
         this.ssn = ssn;
     }
-
     // Getter and Setter for checkAcc
     public int getCheckAcc() {
         return checkAcc;
     }
-
     public void setCheckAcc(int checkAcc) {
         this.checkAcc = checkAcc;
     }
-
     // Getter and Setter for savingAcc
     public int getSavingAcc() {
         return savingAcc;
