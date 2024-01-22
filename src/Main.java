@@ -12,18 +12,23 @@ import java.io.IOException;
 
 public class Main extends JPanel implements ActionListener {
 
-    public JTextField TFname,TFsavingChange,TFcheckingChange , TFdebtChange = new JTextField(),TFstockNum = new JTextField(),TFstockValue,TFSSN,TFchecking,TFsavings,TFdebt,TFnewStockValue,TFnewStockName,TFnewStockCap,TFnumOfShares,TFstockCap;
-    public JComboBox<String> customerSort2,stockName, JCallStocks,shareType,JCstockChange;
-    public JComboBox<Customer> JCcustomerName = new JComboBox<>();
-    public HashSet <Customer> customerHashSet = new HashSet<>();
-    public JTextArea TAsharesAdd;
-    public Font f = new Font(Font.MONOSPACED, Font.BOLD, 12);
-    public double netAsset;
-    public double checking;
-    public double saving;
-    public double debt;
-    public double oldStockValue = -1;
-    public double oldStockCap = -1;
+    public static JTextField TFname,TFsavingChange,TFcheckingChange , TFdebtChange = new JTextField(),TFstockNum = new JTextField(),TFstockValue,TFSSN,TFchecking,TFsavings,TFdebt,TFnewStockValue,TFnewStockName,TFnewStockCap,TFnumOfShares,TFstockCap;
+    public static JComboBox<String> customerSort2, JCcustomerName;
+    public static JComboBox<String> JCallStocks = new JComboBox<>();
+    public static JComboBox<String> JCstockChange = new JComboBox<>();
+    public static JComboBox<String> stockName = new JComboBox<>();
+    public static JComboBox<String> shareType = new JComboBox<>();
+    //public HashSet <Customer> customerHashSet = new HashSet<>();
+    public static HashMap<String,Customer>CustomerMap;
+    public static JTextArea TAsharesAdd;
+    public static JLabel JLnetAsset;
+    public static Font f = new Font(Font.MONOSPACED, Font.BOLD, 12);
+    public static double netAsset;
+    public static double checking;
+    public static double saving;
+    public static double debt;
+    public static double oldStockValue = 0;
+    public static int oldStockCap = 0;
     public static ArrayList<CustomerShare>customerShares;
     public static HashMap<String,Stock>StockMap;
     public static ArrayList<Customer>customerArrayList;
@@ -31,6 +36,7 @@ public class Main extends JPanel implements ActionListener {
     public Main(){
         customerShares = new ArrayList<>();
         StockMap = new HashMap<>();
+        CustomerMap = new HashMap<>();
         customerArrayList = new ArrayList<>();
         Border line = new LineBorder(Color.lightGray, 1);
 
@@ -179,7 +185,6 @@ public class Main extends JPanel implements ActionListener {
         JLstockName.setFont(f);
         left.add(JLstockName);
 
-        stockName = new JComboBox<>();
         stockName.setFont(f);
         stockName.setSize(120, 5);
         left.add(stockName);
@@ -189,7 +194,6 @@ public class Main extends JPanel implements ActionListener {
         JLshareType.setFont(f);
         left.add(JLshareType);
 
-        shareType = new JComboBox<>();
         shareType.setFont(f);
         shareType.setSize(120, 5);
         shareType.addItem("Short");
@@ -215,6 +219,8 @@ public class Main extends JPanel implements ActionListener {
         JCcustomerName.setFont(f);
         JCcustomerName.setRenderer(new CustomComboBoxRenderer());
         JCcustomerName.setPreferredSize(new Dimension(300,20));
+        JCcustomerName.addActionListener(this);
+        JCcustomerName.setActionCommand("customerChoose");
         center.add(JCcustomerName);
 
 
@@ -232,8 +238,7 @@ public class Main extends JPanel implements ActionListener {
         TAmainwindow.setRows(10);
         TAmainwindow.setColumns(65);
         TAmainwindow.setEditable(false);
-        TAmainwindow.append(String.format("%-23s%-9s%-11s$%-10s$%s%n","AMZN","Short","100","$200","$20000"));
-        TAmainwindow.append(String.format("%-23s%-9s%-11s$%-10s$%s%n","AMD","Stock","1","$3000","$3000"));
+        //TAmainwindow.append(String.format("%-23s%-9s%-11s$%-10s$%s%n","AMZN","Short","100","$200","$20000"));
 
         center.add(TAmainwindow);
 
@@ -245,10 +250,12 @@ public class Main extends JPanel implements ActionListener {
         JLallStocks.setFont(f);
         right.add(JLallStocks);
 
-        JCallStocks = new JComboBox<>();
         JCallStocks.setFont(f);
-        JCallStocks.setActionCommand("stockChangeSetup");
+        JCcustomerName.setRenderer(new CustomComboBoxRenderer());
+        JCcustomerName.setPreferredSize(new Dimension(300,20));
         JCallStocks.addActionListener(this);
+        JCallStocks.setActionCommand("stockChangeSetup");
+        JCallStocks.addItem("Choose Stock");
         right.add(JCallStocks);
 
         JLabel JLstockValue = new JLabel("Value: $");
@@ -271,7 +278,7 @@ public class Main extends JPanel implements ActionListener {
         JLstockCap.setFont(f);
         right.add(JLstockCap);
 
-        TFstockCap = new JTextField("1000");
+        TFstockCap = new JTextField();
         TFstockCap.setColumns(19);
         right.add(TFstockCap);
 
@@ -368,9 +375,9 @@ public class Main extends JPanel implements ActionListener {
         JLstockChange.setFont(f);
         bottomCenter.add(JLstockChange);
 
-        JCstockChange = new JComboBox<>();
         JCstockChange.setFont(f);
         JCstockChange.setSize(120, 5);
+        JCstockChange.addItem("Choose Stock");
         bottomCenter.add(JCstockChange);
 
         JLabel JLstockNum = new JLabel("Share Number: ");
@@ -394,7 +401,7 @@ public class Main extends JPanel implements ActionListener {
         JBcustReset.setActionCommand("resetValuesCustomer");
         bottomCenter.add(JBcustReset);
 
-        JLabel JLnetAsset = new JLabel("Total Asset: $" + netAsset);
+        JLnetAsset = new JLabel("Total Asset: $");
         JLnetAsset.setFont(f);
         bottomCenter.add(JLnetAsset);
 
@@ -444,6 +451,7 @@ public class Main extends JPanel implements ActionListener {
         bottomRight.add(JBaddFile);
 
         //loadCustomers();
+        StockMap.put("Choose Stock", new Stock("Invalid",0,0));
 
         frame.setVisible(true);
     }
@@ -453,10 +461,13 @@ public class Main extends JPanel implements ActionListener {
 
     public void actionPerformed(ActionEvent e) {
         String in = e.getActionCommand();
-        if(in.equals("SortChange")){sortCustomers();}
+        if(in.equals("SortChange")){
+            //sortCustomers();
+        }
         else if(in.equals("addCustomer")){addCustomer();}
         else if(in.equals("addShares")){addShares();}
         else if(in.equals("clearShares")){clearShares();}
+        else if(in.equals("customerChoose")){updateCustomer();}
         else if(in.equals("stockChangeSetup")){stockChangeSetup();}
         else if(in.equals("changeValue")){changeValue();}
         else if(in.equals("changeCap")){changeCap();}
@@ -484,7 +495,7 @@ public class Main extends JPanel implements ActionListener {
         errorFrame.setVisible(true);
         return false;
     }
-    public Boolean errorCheckInt(String message, String value){
+    public static Boolean errorCheckInt(String message, String value){
         try{
             int errorCheck = Integer.parseInt(value);
             if(errorCheck < 0)throw new Exception();
@@ -498,14 +509,14 @@ public class Main extends JPanel implements ActionListener {
         errorFrame.setVisible(true);
         return false;
     }
-    public void sortCustomers(){
+    public static void sortCustomers(){
         String selectedOption = (String) customerSort2.getSelectedItem();
         if(selectedOption.equals("Name")){
             Collections.sort(customerArrayList, new SortByName());
             JCcustomerName.removeAllItems();
             for(int i=0; i<customerArrayList.size(); i++)
             {
-                JCcustomerName.addItem(customerArrayList.get(i));
+                JCcustomerName.addItem(customerArrayList.get(i).getName());
             }
         }
         else if(selectedOption.equals("Net Asset")){
@@ -513,93 +524,92 @@ public class Main extends JPanel implements ActionListener {
             JCcustomerName.removeAllItems();
             for(int i=0; i<customerArrayList.size(); i++)
             {
-                JCcustomerName.addItem(customerArrayList.get(i));
+                JCcustomerName.addItem(customerArrayList.get(i).getName());
             }}
         else if(selectedOption.equals("Checking")){
             Collections.sort(customerArrayList, new SortByChecking());
             JCcustomerName.removeAllItems();
             for(int i=0; i<customerArrayList.size(); i++)
             {
-                JCcustomerName.addItem(customerArrayList.get(i));
+                JCcustomerName.addItem(customerArrayList.get(i).getName());
             }}
         else if(selectedOption.equals("Saving")){
             Collections.sort(customerArrayList, new SortBySaving());
             JCcustomerName.removeAllItems();
             for(int i=0; i<customerArrayList.size(); i++)
             {
-                JCcustomerName.addItem(customerArrayList.get(i));
+                JCcustomerName.addItem(customerArrayList.get(i).getName());
             }}
         else if(selectedOption.equals("Debt")){
             Collections.sort(customerArrayList, new SortByDebt());
             JCcustomerName.removeAllItems();
             for(int i=0; i<customerArrayList.size(); i++)
             {
-                JCcustomerName.addItem(customerArrayList.get(i));
+                JCcustomerName.addItem(customerArrayList.get(i).getName());
             }
 
         }
         //System.out.println("Selected Option: " + selectedOption);
     }
-    public void addCustomer()
+    public static void addCustomer()
     {
-        customerHashSet.add(new Customer(TFname.getText(),
+        Customer cust = new Customer(TFname.getText(),
                 Integer.parseInt(TFSSN.getText()),
                 Double.parseDouble(TFchecking.getText()),
                 Double.parseDouble(TFsavings.getText()),
                 Double.parseDouble(TFdebt.getText()),
-                TAsharesAdd.getText()));
-        customerArrayList.clear();
-        customerArrayList.addAll(customerHashSet);
-        JCcustomerName.removeAllItems();
-        for(int i=0; i<customerArrayList.size(); i++)
-        {
-            JCcustomerName.addItem(customerArrayList.get(i));
-        }
+                TAsharesAdd.getText());
+        //customerHashSet.add(cust);
+        CustomerMap.put(TFname.getText(),cust);
+        customerArrayList.add(cust);
+        JCcustomerName.addItem(TFname.getText());
     }
-    public void addShares(){
+    public static void addShares(){
         if(errorCheckInt("Number of Shares is Invalid.", TFnumOfShares.getText())){
             TAsharesAdd.append(String.format("%-7s%-8s%-18d%n",stockName.getSelectedItem(),shareType.getSelectedItem(),Integer.parseInt(TFnumOfShares.getText())));
         }
     }
-    public void clearShares(){
+    public static void clearShares(){
         TAsharesAdd.setText("");
     }
 
-    public void addStock(){
-        StockMap.put(TFnewStockName.getText().trim(),new Stock(TFnewStockName.getText(),Double.parseDouble(TFnewStockValue.getText()),Integer.parseInt(TFnewStockCap.getText())));
-        stockName.addItem(TFnewStockName.getText().trim());
-        JCallStocks.addItem(TFnewStockName.getText().trim());
-        JCstockChange.addItem(TFnewStockName.getText().trim());
+    public static void addStock(){
+        Stock stock = new Stock(TFnewStockName.getText(),Double.parseDouble(TFnewStockValue.getText()),Integer.parseInt(TFnewStockCap.getText()));
+        StockMap.put(stock.getName(),stock);
+        stockName.addItem(stock.getName());
+        JCallStocks.addItem(stock.getName());
+        JCstockChange.addItem(stock.getName());
+        JCstockChange.setSelectedIndex(0);
     }
-    public void stockChangeSetup(){
+    public static void stockChangeSetup(){
         TFstockValue.setText(StockMap.get(JCstockChange.getSelectedItem()).getNewValue()+"");
-        TFstockCap.setText(StockMap.get(JCstockChange.getSelectedItem()).getNewValue()+"");
-        oldStockValue = StockMap.get(JCstockChange.getSelectedItem()).getNewValue();
-        oldStockCap = StockMap.get(JCstockChange.getSelectedItem()).getNewValue();
+        TFstockCap.setText(StockMap.get(JCstockChange.getItemAt(0)).getNewValue()+"");
+        oldStockValue = StockMap.get(JCstockChange.getItemAt(0)).getNewValue();
+        oldStockCap = StockMap.get(JCstockChange.getItemAt(0)).getCap();
     }
-    public void changeValue(){
+    public static void changeValue(){
         StockMap.get(JCstockChange.getSelectedItem()).setValue(Double.parseDouble(TFstockValue.getText()));
         oldStockValue = Double.parseDouble(TFstockValue.getText());
     }
-    public void changeCap(){
+    public static void changeCap(){
         StockMap.get(JCstockChange.getSelectedItem()).setCap(Integer.parseInt(TFstockCap.getText()));
         oldStockCap = Integer.parseInt(TFstockCap.getText());
     }
-    public void resetStockValues(){
+    public static void resetStockValues(){
         TFstockValue.setText(oldStockValue+"");
         TFstockCap.setText(oldStockCap+"");
     }
-    public void changeCheck(){
-        Customer cust = (Customer)JCcustomerName.getSelectedItem();
-        cust.setCheckAcc(Double.parseDouble(TFcheckingChange.getText()));
+    public static void changeCheck(){
+        CustomerMap.get(JCcustomerName.getSelectedItem()).setCheckAcc(Double.parseDouble(TFcheckingChange.getText()));
+        updateCustomer();
     }
-    public void changeSaving(){
-        Customer cust = (Customer)JCcustomerName.getSelectedItem();
-        cust.setSavingAcc(Double.parseDouble(TFcheckingChange.getText()));
+    public static void changeSaving(){
+        CustomerMap.get(JCcustomerName.getSelectedItem()).setSavingAcc(Double.parseDouble(TFsavingChange.getText()));
+        updateCustomer();
     }
-    public void changeDebt(){
-        Customer cust = (Customer)JCcustomerName.getSelectedItem();
-        cust.setDebtAcc(Double.parseDouble(TFcheckingChange.getText()));
+    public static void changeDebt(){
+        CustomerMap.get(JCcustomerName.getSelectedItem()).setDebtAcc(Double.parseDouble(TFdebtChange.getText()));
+        updateCustomer();
     }
     public static void saveToFile() //save ArrayList to a file
     {
@@ -614,29 +624,38 @@ public class Main extends JPanel implements ActionListener {
         }
     }
 
-    public void loadCustomers() {
-        try (FileInputStream fileIn = new FileInputStream("customerSave.txt");
-             ObjectInputStream objectIn = new ObjectInputStream(fileIn)) {
-            customerArrayList.clear();
-            customerArrayList = (ArrayList<Customer>) objectIn.readObject();
-        }
-        catch (IOException | ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-        customerHashSet.clear();
-        customerHashSet.addAll(customerArrayList);
-        JCcustomerName.removeAllItems();
-        for (int i = 0; i < customerArrayList.size(); i++) {
-            JCcustomerName.addItem(customerArrayList.get(i));
-        }
-    }
-    public void removeCustomer(){
+//    public void loadCustomers() {
+//        try (FileInputStream fileIn = new FileInputStream("customerSave.txt");
+//             ObjectInputStream objectIn = new ObjectInputStream(fileIn)) {
+//            customerArrayList.clear();
+//            customerArrayList = (ArrayList<Customer>) objectIn.readObject();
+//        }
+//        catch (IOException | ClassNotFoundException e) {
+//            e.printStackTrace();
+//        }
+//        customerHashSet.clear();
+//        customerHashSet.addAll(customerArrayList);
+//        JCcustomerName.removeAllItems();
+//        for (int i = 0; i < customerArrayList.size(); i++) {
+//            JCcustomerName.addItem(customerArrayList.get(i));
+//        }
+//    }
+    public static void removeCustomer(){
         Customer c = (Customer) JCcustomerName.getSelectedItem();
         if(c!=null)
         {
             customerArrayList.remove(c);
-            customerHashSet.remove(c);
+            CustomerMap.remove(c.getName());
+            //customerHashSet.remove(c);
             JCcustomerName.removeItem(c);
         }
+    }
+    public static void updateCustomer(){
+        Customer cust = (Customer)JCcustomerName.getSelectedItem();
+        TFcheckingChange.setText(cust.getCheckAcc()+"");
+        TFsavingChange.setText(cust.getSavingAcc()+"");
+        TFdebtChange.setText(cust.getDebtAcc()+"");
+        JLnetAsset.setText("Total Asset: $" + cust.getAsset());
+        // add stock stuff
     }
 }
