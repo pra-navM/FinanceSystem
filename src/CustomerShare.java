@@ -24,6 +24,6 @@ public class CustomerShare {
         this.type = type;
     }
     public String toString(){
-        return String.format(stockName + type + numShares);
+        return String.format(stockName + " " + type + " " + numShares);
     }
 }
